@@ -1,11 +1,11 @@
 import React  from 'react';
  import { TextField } from '@mui/material';
-const Input = ({fullWidth,label}) => {
+const Input = ({fullWidth,label, onChange}) => {
  
 
   return (
     <>
-    <TextField fullWidth id="outlined-basic" label={label} variant="outlined" />
+    <TextField onChange={onChange} fullWidth id="outlined-basic" label={label} variant="outlined" />
 
     </>
   );

@@ -3,31 +3,10 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-const currencies = [
-  {
-    value: 'USD',
-    label: '$',
-  },
-  {
-    value: 'EUR',
-    label: '€',
-  },
-  {
-    value: 'BTC',
-    label: '฿',
-  },
-  {
-    value: 'JPY',
-    label: '¥',
-  },
-];
 
-export default function Select({label}) {
-  const [currency, setCurrency] = React.useState();
 
-  const handleChange = (event) => {
-    setCurrency(event.target.value);
-  };
+export default function Select({label,onChange,value,data}) {
+
 
   return (
     <Box
@@ -42,11 +21,11 @@ export default function Select({label}) {
           select
           label={label}
           fullWidth
-          value={currency}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
          
         >
-          {currencies.map((option) => (
+          {data.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
