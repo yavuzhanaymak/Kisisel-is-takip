@@ -13,14 +13,17 @@ const currencies = [
   {
     value: "Urgent",
     label: "Urgent",
+    type:1
   },
   {
     value: "Regular",
     label: "Regular",
+    type:2
   },
   {
     value: "Trival",
     label: "Trival",
+    type:3
   },
 ];
 const columnData = ["Name", "Priority", "Actions"];
@@ -30,6 +33,8 @@ export default function Home() {
   const [Priority, setPriority] = useState("Urgent");
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+
   const [itemID, setItemId] = useState(false);
   const [actions, setActions] = useState();
   const [InputError, setInputError] = useState(false);
@@ -37,13 +42,22 @@ export default function Home() {
   useEffect(() => {
     console.log(jobs);
 
+   jobs.sort((a, b) => a.Priority !== b.Priority ? a.Priority < b.Priority ? 1 : -1 : 0);
+
+ 
     jobs.length > 0 && localStorage.setItem("data", JSON.stringify(jobs));
+
+
   }, [jobs]);
   useEffect(() => {
     const data = localStorage.getItem("data");
+
     if (data) {
       console.log(data);
       setJobs(JSON.parse(data));
+      jobs.sort((a, b) => a.Priority !== b.Priority ? a.Priority < b.Priority ? 1 : -1 : 0);
+
+
     }
   }, []);
 
@@ -119,14 +133,16 @@ export default function Home() {
    
     if (name.length > 3 && name.length < 250) {
       setId(id + 1);
-      setJobs([...jobs, { id: id, name: name, Priority: Priority }]);
+      setJobs([...jobs, { id: id, name: name, Priority: Priority , type:type }]);
+
       setName("");
       setInputError(false);
       setInputHelperText("");
     } else {
       setInputError(true);
       setInputHelperText("Name is too short");
-    }
+    }    
+
   }
 
   return (
@@ -147,7 +163,7 @@ export default function Home() {
           <Select
             data={currencies}
             value={Priority}
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e) => setPriority(e.target.value) && setType(e.target.type)}
             label={"Job Priority"}
           />
         </Grid>
