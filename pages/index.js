@@ -31,6 +31,7 @@ export default function Home() {
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [actions, setActions] = useState();
   useEffect(() => {
     console.log(jobs);
 
@@ -44,35 +45,35 @@ export default function Home() {
     }
   }, []);
 
-  function EditItem(item) {
-    jobs[edit].Priority = Priority
+  function EditItem() {
+    jobs[edit].Priority = Priority;
     setJobs([...jobs]);
- setOpen(false);
-
-  
+    setOpen(false);
   }
 
-  function DeleteItem(item) {
-    setOpen(true)
+  function HandeDelete(item) {
+    setOpen(true);
+    setActions(1);
+    const newJobs = jobs.filter((job,index) => index !== item);
+    setJobs(newJobs);
   }
 
   function EditModal({ item }) {
     return (
       <>
-     <Grid container spacing={{ xs: 2, md: 3 }}>
-        <Grid item xs={12} sm={12} md={12} xl={12}>
-          <Input disabled={true} value={jobs[edit].name} label={"Job Name"} />
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          <Grid item xs={12} sm={12} md={12} xl={12}>
+            <Input disabled={true} value={jobs[edit].name} label={"Job Name"} />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} xl={12}>
+            <Select
+              data={currencies}
+              value={jobs[edit].Priority}
+              onChange={(e) => setPriority(e.target.value)}
+              label={"Job Priority"}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} xl={12}>
-          <Select
-            data={currencies}
-            value={jobs[edit].Priority}
-            onChange={(e) => setPriority(e.target.value)}
-            label={"Job Priority"}
-          />
-        </Grid>
-        
-      </Grid>
       </>
     );
   }
@@ -86,9 +87,8 @@ export default function Home() {
 
   function handleEdit(id) {
     setEdit(id);
+    setActions(0);
     setOpen(true);
-    const newJobs = jobs.filter((job) => job.id !== id);
-    setJobs(newJobs);
   }
 
   function handleAdd() {
@@ -101,7 +101,11 @@ export default function Home() {
       <Title title="Create New Job" />
       <Grid container spacing={{ xs: 2, md: 3 }}>
         <Grid item xs={12} sm={12} md={6} xl={6}>
-          <Input value={name} onChange={(e) => setName(e.target.value)} label={"Job Name"} />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            label={"Job Name"}
+          />
         </Grid>
         <Grid item xs={12} sm={12} md={4} xl={4}>
           <Select
@@ -117,13 +121,13 @@ export default function Home() {
       </Grid>
       <Modal
         handleClose={() => setOpen(!open)}
-        handleEdit={(e) => EditItem(e)}
-        Children={DeleteModal}
+        modalAction={(e) => actions === 0 ? EditItem(e) : HandeDelete(e)}
+        Children={actions === 0 ? EditModal : DeleteModal}
         open={open}
         title={"Edit Job"}
       />
       <Tables
-        actionDelete={DeleteItem}
+        actionDelete={HandeDelete}
         actionEdit={handleEdit}
         columnData={columnData}
         rowsData={jobs}
