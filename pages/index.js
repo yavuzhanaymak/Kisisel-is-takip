@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Plus from '@mui/icons-material/Add';
 import Tables from "../src/components/Tables";
+import Modal from "../src/components/Modal";
 const currencies = [
   {
     value: 'Urgent',
@@ -32,6 +33,8 @@ export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [name, setName] = useState("");
   const [Priority, setPriority] = useState("");
+  const [id, setId] = useState(0);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
  
@@ -42,10 +45,21 @@ console.log(jobs)
  
  
   }
+let count = 0;
+  function handleDelete(id) {
+    const newJobs = jobs.filter((item) => item.id !== id);
+    setJobs(newJobs);
+  }
+
+  function handleEdit(id) {
+    const newJobs = jobs.filter((item) => item.id !== id);
+    setJobs(newJobs);
+  }
 
 
   function handleAdd() {
-    setJobs([...jobs, { id: 2, name: name, Priority: Priority }]);
+   setId(id+1);
+    setJobs([...jobs, { id: id, name: name, Priority: Priority }]);
  
   } 
 
@@ -68,8 +82,8 @@ console.log(jobs)
         <Button actions={()=>handleAdd()} label={"Create"} Icon={Plus} />
         </Grid>
       </Grid>
-
-      <Tables columnData={columnData} rowsData={jobs} />
+<Modal open={open} />
+      <Tables actionDelete={()=>setOpen(!open)} actionEdit={()=>handleEdit()} columnData={columnData} rowsData={jobs} />
     </Container>
   );
 }
