@@ -58,7 +58,7 @@ export default function Tables({ columnData, rowsData , actionDelete, actionEdit
                 />
               </TableCell>
               <TableCell>
-                <IconButton onClick={actionEdit}>
+                <IconButton onClick={()=>actionEdit(index)}>
                   <Edit />
                 </IconButton>
                 <IconButton onClick={actionDelete}>
