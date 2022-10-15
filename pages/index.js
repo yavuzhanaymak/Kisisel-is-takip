@@ -30,7 +30,7 @@ export default function Home() {
   const [Priority, setPriority] = useState("");
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
-  const [edit, setEdit] = useState(false);
+  const [itemID, setItemId] = useState(false);
   const [actions, setActions] = useState();
   useEffect(() => {
     console.log(jobs);
@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
 
   function EditItem() {
-    jobs[edit].Priority = Priority;
+    jobs[itemID].Priority = Priority;
     setJobs([...jobs]);
     setOpen(false);
   }
@@ -54,21 +54,32 @@ export default function Home() {
   function HandeDelete(item) {
     setOpen(true);
     setActions(1);
-    const newJobs = jobs.filter((job,index) => index !== item);
-    setJobs(newJobs);
+    setItemId(item);
+   
   }
+
+  function modalActions() {
+    if (actions === 1) {
+      const newJobs = jobs.filter((item, index) => index !== itemID);
+      setJobs(newJobs);
+      setOpen(false);
+    } else {
+      EditItem();
+    }
+  }
+
 
   function EditModal({ item }) {
     return (
       <>
         <Grid container spacing={{ xs: 2, md: 3 }}>
           <Grid item xs={12} sm={12} md={12} xl={12}>
-            <Input disabled={true} value={jobs[edit].name} label={"Job Name"} />
+            <Input disabled={true} value={jobs[itemID].name} label={"Job Name"} />
           </Grid>
           <Grid item xs={12} sm={12} md={12} xl={12}>
             <Select
               data={currencies}
-              value={jobs[edit].Priority}
+              value={jobs[itemID].Priority}
               onChange={(e) => setPriority(e.target.value)}
               label={"Job Priority"}
             />
@@ -86,7 +97,7 @@ export default function Home() {
   }
 
   function handleEdit(id) {
-    setEdit(id);
+    setItemId(id);
     setActions(0);
     setOpen(true);
   }
@@ -121,7 +132,7 @@ export default function Home() {
       </Grid>
       <Modal
         handleClose={() => setOpen(!open)}
-        modalAction={(e) => actions === 0 ? EditItem(e) : HandeDelete(e)}
+        modalAction={(e) => modalActions()}
         Children={actions === 0 ? EditModal : DeleteModal}
         open={open}
         title={"Edit Job"}
