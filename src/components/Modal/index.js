@@ -48,7 +48,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function Modal({open, handleClose, title, Children}) {
+export default function Modal({open,handleEdit, handleClose, title, Children}) {
  
   
 
@@ -67,7 +67,7 @@ export default function Modal({open, handleClose, title, Children}) {
          <Children/>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={()=>handleEdit("regular")}>
        Yes
           </Button>
         </DialogActions>

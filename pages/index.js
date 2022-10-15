@@ -44,11 +44,42 @@ export default function Home() {
     }
   }, []);
 
+  function EditItem(item) {
+    jobs[edit].Priority = Priority
+    setJobs([...jobs]);
+ setOpen(false);
+
+  
+  }
+
+  function DeleteItem(item) {
+    setOpen(true)
+  }
+
   function EditModal({ item }) {
     return (
       <>
-        <Title title="Edit Job" />
-        <h4>Are you sure edit {jobs[edit].name}</h4>
+     <Grid container spacing={{ xs: 2, md: 3 }}>
+        <Grid item xs={12} sm={12} md={12} xl={12}>
+          <Input disabled={true} value={jobs[edit].name} label={"Job Name"} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} xl={12}>
+          <Select
+            data={currencies}
+            value={jobs[edit].Priority}
+            onChange={(e) => setPriority(e.target.value)}
+            label={"Job Priority"}
+          />
+        </Grid>
+        
+      </Grid>
+      </>
+    );
+  }
+  function DeleteModal({ item }) {
+    return (
+      <>
+        <h1>Are you sure you want to delete this item?</h1>
       </>
     );
   }
@@ -56,6 +87,8 @@ export default function Home() {
   function handleEdit(id) {
     setEdit(id);
     setOpen(true);
+    const newJobs = jobs.filter((job) => job.id !== id);
+    setJobs(newJobs);
   }
 
   function handleAdd() {
@@ -68,7 +101,7 @@ export default function Home() {
       <Title title="Create New Job" />
       <Grid container spacing={{ xs: 2, md: 3 }}>
         <Grid item xs={12} sm={12} md={6} xl={6}>
-          <Input onChange={(e) => setName(e.target.value)} label={"Job Name"} />
+          <Input value={name} onChange={(e) => setName(e.target.value)} label={"Job Name"} />
         </Grid>
         <Grid item xs={12} sm={12} md={4} xl={4}>
           <Select
@@ -84,11 +117,13 @@ export default function Home() {
       </Grid>
       <Modal
         handleClose={() => setOpen(!open)}
-        Children={EditModal}
+        handleEdit={(e) => EditItem(e)}
+        Children={DeleteModal}
         open={open}
+        title={"Edit Job"}
       />
       <Tables
-        actionDelete={() => setOpen(!open)}
+        actionDelete={DeleteItem}
         actionEdit={handleEdit}
         columnData={columnData}
         rowsData={jobs}

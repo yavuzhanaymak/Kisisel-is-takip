@@ -61,7 +61,7 @@ export default function Tables({ columnData, rowsData , actionDelete, actionEdit
                 <IconButton onClick={()=>actionEdit(index)}>
                   <Edit />
                 </IconButton>
-                <IconButton onClick={actionDelete}>
+                <IconButton onClick={()=>actionDelete(row.id)}>
                   <Delete />
                 </IconButton>
               </TableCell>
