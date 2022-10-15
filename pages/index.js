@@ -27,11 +27,13 @@ const columnData = ["Name", "Priority", "Actions"];
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [name, setName] = useState("");
-  const [Priority, setPriority] = useState("");
+  const [Priority, setPriority] = useState("Urgent");
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
   const [itemID, setItemId] = useState(false);
   const [actions, setActions] = useState();
+  const [InputError, setInputError] = useState(false);
+  const [InputHelperText, setInputHelperText] = useState("");
   useEffect(() => {
     console.log(jobs);
 
@@ -51,11 +53,10 @@ export default function Home() {
     setOpen(false);
   }
 
-  function HandeDelete(item) {
+  function HandleDelete(item) {
     setOpen(true);
     setActions(1);
     setItemId(item);
-   
   }
 
   function modalActions() {
@@ -68,13 +69,25 @@ export default function Home() {
     }
   }
 
+  function handleInput(e) {
+    name.length > 3 ? setInputError(false) : setInputError(true);
+    name.length > 3 ? setInputHelperText("") : setInputHelperText("Name is too short");
+
+    name.length > 250 ? setInputError(true) : setInputError(false);
+    name.length > 250 ? setInputHelperText("Name is too long") : setInputHelperText("");
+    setName(e.target.value);
+  }
 
   function EditModal({ item }) {
     return (
       <>
         <Grid container spacing={{ xs: 2, md: 3 }}>
           <Grid item xs={12} sm={12} md={12} xl={12}>
-            <Input disabled={true} value={jobs[itemID].name} label={"Job Name"} />
+            <Input
+              disabled={true}
+              value={jobs[itemID].name}
+              label={"Job Name"}
+            />
           </Grid>
           <Grid item xs={12} sm={12} md={12} xl={12}>
             <Select
@@ -103,8 +116,17 @@ export default function Home() {
   }
 
   function handleAdd() {
-    setId(id + 1);
-    setJobs([...jobs, { id: id, name: name, Priority: Priority }]);
+   
+    if (name.length > 3 && name.length < 250) {
+      setId(id + 1);
+      setJobs([...jobs, { id: id, name: name, Priority: Priority }]);
+      setName("");
+      setInputError(false);
+      setInputHelperText("");
+    } else {
+      setInputError(true);
+      setInputHelperText("Name is too short");
+    }
   }
 
   return (
@@ -114,8 +136,11 @@ export default function Home() {
         <Grid item xs={12} sm={12} md={6} xl={6}>
           <Input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => handleInput(e)}
             label={"Job Name"}
+            required={false}
+            error={InputError}
+            helperText={InputHelperText}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={4} xl={4}>
@@ -138,7 +163,7 @@ export default function Home() {
         title={"Edit Job"}
       />
       <Tables
-        actionDelete={HandeDelete}
+        actionDelete={HandleDelete}
         actionEdit={handleEdit}
         columnData={columnData}
         rowsData={jobs}
