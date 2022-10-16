@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 
-import Title from "src/components/title";
-import Input from "src/components/input";
-import Select from "src/components/select";
-import Button from "src/components/button";
+import Title from "src/components/Title";
+import Input from "src/components/Input";
+import Select from "src/components/Select";
+import Button from "src/components/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Plus from "@mui/icons-material/Add";
-import Tables from "src/components/tables";
-import Modal from "src/components/modal";
-import Filter from "src/components/filter";
+import Tables from "src/components/Tables";
+import Modal from "src/components/Modal";
+import Filter from "src/components/Filter";
 import axios from "axios";
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 const columnData = ["Name", "Priority", "Actions"];
