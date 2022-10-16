@@ -10,23 +10,8 @@ import Plus from "@mui/icons-material/Add";
 import Tables from "../src/components/Tables";
 import Modal from "../src/components/Modal";
 import Filter from "../src/components/Filter";
-const currencies = [
-  {
-    value: "Urgent",
-    label: "Urgent",
-    type: 1,
-  },
-  {
-    value: "Regular",
-    label: "Regular",
-    type: 2,
-  },
-  {
-    value: "Trival",
-    label: "Trival",
-    type: 3,
-  },
-];
+import axios from "axios";
+
 const columnData = ["Name", "Priority", "Actions"];
 export default function Home() {
   const [jobs, setJobs] = useState([]);
@@ -36,14 +21,13 @@ export default function Home() {
   const [Priority, setPriority] = useState("Urgent");
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState(0);
+  const [currencies, setCurrencies] = useState([]);
   const [filterName, setFilterName] = useState("");
   const [itemID, setItemId] = useState(false);
   const [actions, setActions] = useState();
   const [InputError, setInputError] = useState(false);
   const [InputHelperText, setInputHelperText] = useState("");
 
-  let counter = 0;
   useEffect(() => {
     console.log(filterData);
 
@@ -52,12 +36,15 @@ export default function Home() {
     filterData.sort(function (a, b) {
       return a.type - b.type;
     });
+
+    jobs.sort(function (a, b) {
+      return a.type - b.type;
+    });
   }, [filterData]);
   useEffect(() => {
     const data = localStorage.getItem("data");
-
+    GetPriority();
     if (data) {
-      counter++;
       setJobs(JSON.parse(data));
 
       setFilterData(JSON.parse(data));
@@ -71,6 +58,13 @@ export default function Home() {
       });
     }
   }, []);
+  function GetPriority()
+  {
+    axios.get('/api/priority').then(resp => {
+      setCurrencies(resp.data);
+});
+  }
+  
   function PriorityDeggre(value) {
     switch (value) {
       case "Urgent":
@@ -219,7 +213,7 @@ export default function Home() {
           <Select
             data={currencies}
             value={Priority}
-            type={type}
+         
             onChange={(e) =>
               setPriority(e.target.value) && setType(e.target.type)
             }

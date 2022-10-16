@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 
-export default function Select({label,onChange,value,data,type}) {
+export default function Select({label,onChange,value,data}) {
 
 
   return (
@@ -22,7 +22,6 @@ export default function Select({label,onChange,value,data,type}) {
           label={label}
           fullWidth
           value={value}
-          type={type}
           onChange={onChange}
          
         >
