@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Input from "../Input";
-import Select from "../Select";
+import Input from "../input";
+import Select from "../select";
 const currencies = [
   {
     value: "Priority (all)",
