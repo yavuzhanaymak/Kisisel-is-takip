@@ -36,7 +36,7 @@ function selectColorPriority(priority) {
 
 export default function Tables({ columnData, rowsData , actionDelete, actionEdit}) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer className="mt-5" component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

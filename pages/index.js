@@ -9,61 +9,86 @@ import Grid from "@mui/material/Grid";
 import Plus from "@mui/icons-material/Add";
 import Tables from "../src/components/Tables";
 import Modal from "../src/components/Modal";
+import Filter from "../src/components/Filter";
 const currencies = [
   {
     value: "Urgent",
     label: "Urgent",
-    type:1
+    type: 1,
   },
   {
     value: "Regular",
     label: "Regular",
-    type:2
+    type: 2,
   },
   {
     value: "Trival",
     label: "Trival",
-    type:3
+    type: 3,
   },
 ];
 const columnData = ["Name", "Priority", "Actions"];
 export default function Home() {
   const [jobs, setJobs] = useState([]);
+  const [filterData, setFilterData] = useState([]);
+
   const [name, setName] = useState("");
   const [Priority, setPriority] = useState("Urgent");
   const [id, setId] = useState(0);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
-
+  const [filterName, setFilterName] = useState("");
   const [itemID, setItemId] = useState(false);
   const [actions, setActions] = useState();
   const [InputError, setInputError] = useState(false);
   const [InputHelperText, setInputHelperText] = useState("");
+
+  let counter = 0;
   useEffect(() => {
-    console.log(jobs);
+    console.log(filterData);
 
-   jobs.sort((a, b) => a.Priority !== b.Priority ? a.Priority < b.Priority ? 1 : -1 : 0);
-
- 
-    jobs.length > 0 && localStorage.setItem("data", JSON.stringify(jobs));
-
-
-  }, [jobs]);
+    filterData.length > 0 &&
+      localStorage.setItem("data", JSON.stringify(filterData));
+    filterData.sort(function (a, b) {
+      return a.type - b.type;
+    });
+  }, [filterData]);
   useEffect(() => {
     const data = localStorage.getItem("data");
 
     if (data) {
-      console.log(data);
+      counter++;
       setJobs(JSON.parse(data));
-      jobs.sort((a, b) => a.Priority !== b.Priority ? a.Priority < b.Priority ? 1 : -1 : 0);
 
+      setFilterData(JSON.parse(data));
 
+      jobs.sort(function (a, b) {
+        return a.type - b.type;
+      });
+
+      filterData.sort(function (a, b) {
+        return a.type - b.type;
+      });
     }
   }, []);
+  function PriorityDeggre(value) {
+    switch (value) {
+      case "Urgent":
+        return 1;
+      case "Regular":
+        return 2;
+      case "Trival":
+        return 3;
+      default:
+        return 0;
+    }
+  }
 
   function EditItem() {
-    jobs[itemID].Priority = Priority;
-    setJobs([...jobs]);
+    filterData[itemID].Priority = Priority;
+    filterData[itemID].type = PriorityDeggre(Priority);
+    setFilterData([...filterData]);
+    localStorage.setItem("data", JSON.stringify(filterData));
     setOpen(false);
   }
 
@@ -75,8 +100,10 @@ export default function Home() {
 
   function modalActions() {
     if (actions === 1) {
-      const newJobs = jobs.filter((item, index) => index !== itemID);
+      const newJobs = filterData.filter((item, index) => index !== itemID);
+      setFilterData(newJobs);
       setJobs(newJobs);
+      localStorage.setItem("data", JSON.stringify(newJobs));
       setOpen(false);
     } else {
       EditItem();
@@ -85,10 +112,14 @@ export default function Home() {
 
   function handleInput(e) {
     name.length > 3 ? setInputError(false) : setInputError(true);
-    name.length > 3 ? setInputHelperText("") : setInputHelperText("Name is too short");
+    name.length > 3
+      ? setInputHelperText("")
+      : setInputHelperText("Name is too short");
 
     name.length > 250 ? setInputError(true) : setInputError(false);
-    name.length > 250 ? setInputHelperText("Name is too long") : setInputHelperText("");
+    name.length > 250
+      ? setInputHelperText("Name is too long")
+      : setInputHelperText("");
     setName(e.target.value);
   }
 
@@ -129,11 +160,37 @@ export default function Home() {
     setOpen(true);
   }
 
+  function FilterJobNames(e) {
+    setFilterName(e);
+
+    setFilterData(jobs.filter((item) => item.name.includes(e)));
+  }
+  function FilterPriority(e) {
+    e !== "Priority (all)"
+      ? setFilterData(jobs.filter((item) => item.Priority.includes(e)))
+      : setFilterData(jobs);
+  }
   function handleAdd() {
-   
     if (name.length > 3 && name.length < 250) {
       setId(id + 1);
-      setJobs([...jobs, { id: id, name: name, Priority: Priority , type:type }]);
+      setJobs([
+        ...jobs,
+        {
+          id: id,
+          name: name,
+          Priority: Priority,
+          type: PriorityDeggre(Priority),
+        },
+      ]);
+      setFilterData([
+        ...jobs,
+        {
+          id: id,
+          name: name,
+          Priority: Priority,
+          type: PriorityDeggre(Priority),
+        },
+      ]);
 
       setName("");
       setInputError(false);
@@ -141,8 +198,7 @@ export default function Home() {
     } else {
       setInputError(true);
       setInputHelperText("Name is too short");
-    }    
-
+    }
   }
 
   return (
@@ -163,7 +219,10 @@ export default function Home() {
           <Select
             data={currencies}
             value={Priority}
-            onChange={(e) => setPriority(e.target.value) && setType(e.target.type)}
+            type={type}
+            onChange={(e) =>
+              setPriority(e.target.value) && setType(e.target.type)
+            }
             label={"Job Priority"}
           />
         </Grid>
@@ -171,18 +230,25 @@ export default function Home() {
           <Button actions={() => handleAdd()} label={"Create"} Icon={Plus} />
         </Grid>
       </Grid>
+      <Title title="Job List" />
+
+      <Filter
+        value={filterName}
+        filterName={FilterJobNames}
+        FilterPriority={FilterPriority}
+      />
+      <Tables
+        actionDelete={HandleDelete}
+        actionEdit={handleEdit}
+        columnData={columnData}
+        rowsData={filterData}
+      />
       <Modal
         handleClose={() => setOpen(!open)}
         modalAction={(e) => modalActions()}
         Children={actions === 0 ? EditModal : DeleteModal}
         open={open}
         title={"Edit Job"}
-      />
-      <Tables
-        actionDelete={HandleDelete}
-        actionEdit={handleEdit}
-        columnData={columnData}
-        rowsData={jobs}
       />
     </Container>
   );

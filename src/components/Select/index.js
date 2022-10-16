@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 
-export default function Select({label,onChange,value,data}) {
+export default function Select({label,onChange,value,data,type}) {
 
 
   return (
@@ -22,11 +22,12 @@ export default function Select({label,onChange,value,data}) {
           label={label}
           fullWidth
           value={value}
+          type={type}
           onChange={onChange}
          
         >
           {data.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={option.value} value={option.value} type={option.type}>
               {option.label}
             </MenuItem>
           ))}
