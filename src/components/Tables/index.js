@@ -37,7 +37,7 @@ function selectColorPriority(priority) {
 export default function Tables({ columnData, rowsData , actionDelete, actionEdit}) {
   return (
     <TableContainer className="mt-5" component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 290 }}   aria-label="simple table">
         <TableHead>
           <TableRow>
             {columnData.map((item, index) => (
@@ -47,17 +47,18 @@ export default function Tables({ columnData, rowsData , actionDelete, actionEdit
         </TableHead>
         <TableBody>
           {rowsData?.map((row,index) => (
-            <TableRow key={index}>
+            <TableRow              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            key={index}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell>
+              <TableCell component="th" scope="row">
                 <Chip
                   label={row.Priority}
                   color={selectColorPriority(row.Priority)}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell component="th" scope="row">
                 <IconButton onClick={()=>actionEdit(index)}>
                   <Edit />
                 </IconButton>

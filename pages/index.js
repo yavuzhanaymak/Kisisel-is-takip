@@ -11,7 +11,7 @@ import Tables from "../src/components/Tables";
 import Modal from "../src/components/Modal";
 import Filter from "../src/components/Filter";
 import axios from "axios";
-
+import FmdBadIcon from '@mui/icons-material/FmdBad';
 const columnData = ["Name", "Priority", "Actions"];
 export default function Home() {
   const [jobs, setJobs] = useState([]);
@@ -29,8 +29,6 @@ export default function Home() {
   const [InputHelperText, setInputHelperText] = useState("");
 
   useEffect(() => {
-    console.log(filterData);
-
     filterData.length > 0 &&
       localStorage.setItem("data", JSON.stringify(filterData));
     filterData.sort(function (a, b) {
@@ -58,13 +56,16 @@ export default function Home() {
       });
     }
   }, []);
-  function GetPriority()
-  {
-    axios.get('/api/priority').then(resp => {
-      setCurrencies(resp.data);
-});
+  function GetPriority() {
+    try {
+      axios.get("/api/priority").then((resp) => {
+        setCurrencies(resp.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-  
+
   function PriorityDeggre(value) {
     switch (value) {
       case "Urgent":
@@ -142,9 +143,10 @@ export default function Home() {
   }
   function DeleteModal({ item }) {
     return (
-      <>
-        <h1>Are you sure you want to delete this item?</h1>
-      </>
+      <div className="ortala">
+      <FmdBadIcon fontSize="large" color="secondary"/>
+        <h3>Are you sure you want to delete this item?</h3>
+      </div>
     );
   }
 
@@ -213,7 +215,6 @@ export default function Home() {
           <Select
             data={currencies}
             value={Priority}
-         
             onChange={(e) =>
               setPriority(e.target.value) && setType(e.target.type)
             }
